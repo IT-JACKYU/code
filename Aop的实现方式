@@ -1,0 +1,29 @@
+1、Aspect
+
+
+2
+@Bean
+public BeanNameAutoProxyCreator beanNameAutoProxyCreator(){
+    BeanNameAutoProxyCreator beanNameAutoProxyCreator=new BeanNameAutoProxyCreator();
+    //设置要创建代理的那些Bean的名字
+    beanNameAutoProxyCreator.setBeanNames("helloController*");
+    //设置拦截链名字(这些拦截器是有先后顺序的)
+    beanNameAutoProxyCreator.setInterceptorNames("myMethodInterceptor"); //methodInterceptor 实现
+    return beanNameAutoProxyCreator;
+}
+    
+@Component
+public class MyMethodInterceptor implements MethodInterceptor {
+	@Override
+	public Object invoke(MethodInvocation invocation) throws Throwable {
+		EnableErpHeaders annotation = invocation.getMethod().getAnnotation(EnableErpHeaders.class);
+		if(annotation!=null){
+			System.out.println("222222222222222222");
+		}
+
+		System.out.println(getClass()+"调用方法前");
+		Object ret=invocation.proceed();
+		System.out.println(getClass()+"调用方法后");
+		return ret;
+	}
+}
